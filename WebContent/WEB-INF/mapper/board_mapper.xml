@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="board">
+	
+	<insert id="addContentInfo" parameterType="com.book.beans.ContentBean">
+		
+		<selectKey keyProperty="content_idx" order="BEFORE" resultType="java.lang.Integer">
+			select GYBH_content_seq.nextval from dual
+		</selectKey>
+	
+		<![CDATA[
+			insert into GY_CONTENT(
+			content_idx, 
+			content_subject, 
+			content_text,
+			content_file, 
+			content_writer_idx, 
+			content_board_idx, 
+			AddDate,
+			AddId
+			)
+			values (
+			#{content_idx}, 
+			#{content_subject}, 
+			#{content_text}, 
+			#{content_file, jdbcType=VARCHAR},
+			#{content_writer_idx}, 
+			#{content_board_idx}, 
+			SYSDATE,
+			#{content_writer_idx} )
+		]]>
+	</insert>
+	
+	<select id="getInfoName" parameterType="java.lang.Integer" resultType="java.lang.String">
+		<![CDATA[
+			select info_name
+			from gy_info_table
+			where info_idx=#{info_idx}
+		]]>
+	</select>
+	
+	<select id="getContentList" parameterType="java.lang.Integer" resultType="com.book.beans.ContentBean">
+	<![CDATA[
+			select a.content_idx , 
+                    a.content_subject||(select '('||count(boardcode)||')'
+                            from gy_comment
+                            where boardcode =   a.content_idx
+                            group by boardcode 
+                             ) AS content_subject , 
+                    b.user_name AS content_writer_name , 
+                    to_char(a.adddate,'YYYY-MM-DD') AS AddDate
+			from gy_content a
+			join gy_user b
+			on A.CONTENT_WRITER_IDX = b.user_idx
+			where a.content_board_idx=#{info_idx}
+			order by adddate desc
+		]]>
+	</select>
+	
+	
+	<select id="getContentInfo" parameterType="java.lang.Integer" resultType="com.book.beans.ContentBean">
+		<![CDATA[
+			    select   b.user_name AS content_writer_name , 
+				            to_char(a.adddate,'YYYY-MM-DD') AS addDate,
+				            a.content_subject ,
+				            A.content_text,
+				            a.content_file,
+				            a.content_writer_idx
+	            from gy_content a
+	            join gy_user b
+	            on A.CONTENT_WRITER_IDX = b.user_idx
+	            where A.CONTENT_IDX =#{content_idx}
+		]]>
+	</select>
+	
+		<update id="modifyContentInfo" parameterType="com.book.beans.ContentBean">
+		<![CDATA[
+			update GY_CONTENT 
+			set content_subject = #{content_subject}, 
+				content_text = #{content_text}, 
+				content_file = #{content_file, jdbcType=VARCHAR} ,
+				upddate      = SYSDATE,
+				updId		= #{content_writer_idx}
+			where content_idx= #{content_idx}
+		]]>
+	</update>
+	<delete  id="deleteContentInfo" parameterType="java.lang.Integer" >
+	<![CDATA[
+			    delete
+	            from gy_content 
+	            where content_idx =#{content_idx}
+		]]>
+	</delete>
+	
+	
+	<select id="getContentCnt" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		<![CDATA[
+			    select  count(*)
+	            from gy_content a
+	            where A.content_board_idx=#{info_idx}
+		]]>
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="user">
+	<select id="checkUserIdExist" parameterType="java.lang.String" resultType="java.lang.String">
+		<![CDATA[
+			select user_name
+			from gy_user
+			where user_id = #{user_id}
+		]]>
+	</select>
+	
+	<insert id="addUserInfo" parameterType="com.book.beans.UserBean" >
+		<![CDATA[
+			
+	insert into gy_user(user_idx,
+					    User_Id , 
+					    User_Name,
+					    User_Pw,
+					    User_Mail,
+					    User_CellPhone,
+					    User_Gender,
+					    User_Gubun,
+					    User_UseYn,
+					    AddDate,
+					    AddId,
+					    UpdDate,
+					    UpdId)
+				values (gy_user_seq.nextval, 
+					   #{User_Id},
+					   #{User_Name},
+					   #{User_Pw},
+					   #{User_mail},
+					   #{User_CellPhone},
+					   #{User_Gender},
+					   '1',
+					   'Y',
+					   SYSDATE,
+					   'JBH',
+					   SYSDATE,
+					   'JBH')
+		]]>
+	</insert>
+	
+	
+	<update id="checkUsermailchk" parameterType="com.book.beans.UserBean" >
+		<![CDATA[
+			update gy_user set User_mailchk = #{User_mailchk} 
+			where User_Id = #{User_Id} 
+			and   User_mail=#{User_mail}
+	
+		]]>
+	</update>
+	
+	<update id="checkUserRemailchk" parameterType="java.util.HashMap" >
+		<![CDATA[
+			update gy_user set User_mailchk = #{User_mailchk} 
+			where  User_mail=#{User_mail}
+			and User_Id = #{User_Id} 
+			  
+	
+		]]>
+	</update>
+	
+	<update id="alter_userKey" parameterType="com.book.beans.UserBean" >
+		<![CDATA[
+			update gy_user set User_mailchk = 'Y' 
+			where  User_mailchk=#{User_mailchk}
+	
+		]]>
+	</update>
+	
+	<select id="getLoginUserInfo" parameterType="com.book.beans.UserBean" resultType="com.book.beans.UserBean">
+		<![CDATA[
+			select user_idx, user_name  
+			from gy_user
+			where User_id = #{User_Id} 
+			and User_pw = #{User_Pw} 
+		]]>
+	</select>
+	<select id="getMailChk" parameterType="com.book.beans.UserBean" resultType="java.lang.String">
+		<![CDATA[
+			select User_mailchk
+			from gy_user
+			where User_id = #{User_Id} 
+			and User_pw = #{User_Pw} 
+			
+		]]>
+	</select>
+	
+	
+	<select id="getModifyUserInfo" parameterType="java.lang.Integer" resultType="com.book.beans.UserBean">
+		<![CDATA[
+			select  User_Id , 
+					User_Name, 
+					User_Mail,
+					User_CellPhone,
+					User_Gender
+			from gy_user
+			where user_idx=#{user_idx} 
+		]]>
+	</select>
+	
+	
+	<update id="setModifyUserInfo" parameterType="com.book.beans.UserBean" >
+		<![CDATA[
+			update gy_user set 
+			    User_pw = #{User_Pw},
+			    User_Cellphone = #{User_CellPhone},
+			    User_Gender =   #{User_Gender}
+			where User_idx = #{user_idx} 
+		]]>
+	</update>
+	
+	
+	
+	
+</mapper>

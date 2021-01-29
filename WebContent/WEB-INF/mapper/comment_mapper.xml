@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+					    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="comment">
+	
+	<insert id="commentwrite" parameterType="java.util.HashMap">
+		<selectKey keyProperty="code" order="BEFORE" resultType="java.lang.Integer">
+			select GY_Comment_seq.nextval from dual
+		</selectKey>
+		
+	
+		<![CDATA[
+			insert into GY_Comment(
+			code, 
+			groupcode, 
+			groupLayer,
+			memo, 
+			boardcode, 
+			commentcode,
+			commentorder,
+			commentId, 
+			AddId,
+			AddDate,
+			UpdId,
+			UpdDate
+			)
+			values (
+			#{code},  
+			#{code}, 
+			'1', 
+			#{memo},
+			#{boardcode},
+			#{code}, 
+			1,
+			#{commentId}, 
+			#{commentId}, 
+			SYSDATE,
+			#{commentId}, 
+			SYSDATE )
+		]]>
+	</insert>
+	
+	
+	<select id="commentread" parameterType="java.lang.Integer" resultType="com.book.beans.CommentBean">
+		<![CDATA[
+			select a.code,a.memo,b.user_name as commentname,commentId
+			from GY_Comment a
+			left join gy_user b
+			on A.COMMENTID= B.USER_IDX
+			where a.boardcode =( select content_idx from GY_content where content_idx =#{content_idx})
+			order by code desc
+		]]>
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
